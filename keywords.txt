@@ -1,0 +1,50 @@
+// variable
+id
+num
+
+// key word
+if
+else
+for
+while
+int
+return
+true
+false
+bool
+main
+
+// operator
++
+=
+-
+<
+>
+(
+[
+{
+)
+]
+}
+;
+/
+*
+&
+|
+!
+
+// double operator
++=
+-=
+==
+/=
+*=
+&&
+||
+++
+--
+
+// for production
+var
+nullprod
+endw

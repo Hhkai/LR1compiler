@@ -1,0 +1,4 @@
+S->A
+A->C C
+C->int C
+C->bool 

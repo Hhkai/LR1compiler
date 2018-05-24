@@ -1,0 +1,56 @@
+S->int main ( ) { A return var ; }
+
+// declaration
+X->Y Z ;
+X->Y R
+Y->int
+Y->bool
+Z->var
+
+// assignment
+R->Q ; 
+
+// calculation
+E->E + T
+E-> E - T
+E->T
+T->T * F
+T-> T / F
+T->F
+F->( E )
+F->var
+
+E->G
+
+// complex
+A->C A
+C->X
+C->B
+C->R
+A->C
+
+// control
+B->if ( E ) { A } else { A } 
+B->if ( E ) { A } 
+B->while ( E ) { A }
+B->for ( R G ; Q ) { A } 
+
+Q->var = E
+Q->var ++
+Q->var --
+Q->-- var 
+Q->++ var
+
+// bool 
+G->G || G
+G->G && G
+G->! G
+G->( G )
+G->E O E
+G->true
+G->false
+G->var
+// bool operator
+O-><
+O->>
+O->==

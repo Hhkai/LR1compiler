@@ -1,0 +1,19 @@
+int main(){
+    int x;
+    bool b;
+    b=false;
+    x = 5;
+    for (i = 0; i < x; i++) {
+        if ( i == 3 ||  i == (x / 2)) {
+            b = true;
+        }
+    }
+    while (x) {
+        b = !b;
+/*
+gggggggggggggggggg
+*/
+        x--;
+    }
+    return 0;
+} 
