@@ -493,9 +493,9 @@ void makeClosure(Closure* clo)
 int CompilerTable::initGoto(std::string filename, char s)
 {
     readinput(filename);
-    showinputwfg();
+    // showinputwfg();
     initFirst();
-    showFirst();
+    // showFirst();
     //
     std::cout << "======" << std::endl;
     // showClosures();
@@ -634,7 +634,7 @@ int CompilerTable::initGoto(std::string filename, char s)
         }
     }
     std::cout << "init goto end" << std::endl;
-    showClosures();
+    // showClosures();
     std::cout << "make table begin" << std::endl;
     for (int i = 0; i < cur_closure; i++) {
         if (closures[i]->make_red()) return 1;
@@ -772,136 +772,3 @@ void CompilerTable::read_source(Word* words[], int words_n)
         std::cout << "-------" << std::endl;
     }
 }
-/*
-void CompilerTable::read_source(Word* words[], int words_n)
-{
-    stateStack.cur = 0;// clear stateStack
-    symStack.cur = 0; // clear symStack
-    // 
-    stateStack.push(0);
-    
-    int word_code;
-    Closure* p_clo;
-    int cur_state;
-    int nxt_state;
-    NodeChain* ndc=0;
-    int len;
-    Node pushNode = Node();
-    std::cout << "==========" << std::endl;
-    Node* showNode;
-    
-    int cur_word = 0;
-    Word* word;
-    while (cur_word < words_n) {
-        std::cout << "cur_word:" << cur_word << std::endl;
-        word = words[cur_word];
-        cur_word++;
-        if ((word_code = word->code) == WORD_NOTINGEND) continue;
-        if (word_code == 0) word_code = kwords::getInt("endw");
-        if (word->code == kwords::getInt("id") || word->code == kwords::getInt("num")) word_code = kwords::getInt("var");
-        // std::cout << "word code:" << word->code << std::endl;
-        cur_state = stateStack.top();
-        
-        std::cout << "word_code:" << word_code << std::endl;
-#ifdef debug
-        std::cout << "scan a code:" << word_code << std::endl;
-        std::cout << "-------" << std::endl;
-        stateStack.show();
-        symStack.show();
-        std::cout << "-------" << std::endl;
-#endif
-        while ((nxt_state = symGoto[cur_state][word_code]) == -1) {
-            p_clo = closures[cur_state];
-            if ((ndc = p_clo->reduce[word_code]) == 0) {
-                // std::cout << "cur state:" << cur_state << std::endl;
-                // std::cout << "word_code:" << word_code << std::endl;
-                //stateStack.show();
-                //symStack.show();
-                std::cout << "error:no reduce" << std::endl;
-                break;
-            }
-            // reduce 
-            std::cout << "--------------------\n";
-            std::cout << "symbol stack:\t\t";
-            symStack.show();
-            std::cout << "-------------------- next code:\t\t";
-            std::cout << kwords::getStr(word_code) << std::endl;
-            std::cout << "reduce:\t\t" << ndc->left << "->";
-            showNode = ndc->head->nxt;
-            while (showNode) {
-                showNode->show();
-                showNode = showNode->nxt;
-            }
-            std::cout << std::endl;
-            //
-            len = ndc->len;
-            stateStack.pop(len);
-            symStack.pop(len);
-#ifdef debug
-            std::cout << "-------" << std::endl;
-            stateStack.show();
-            symStack.show();
-            std::cout << "-------" << std::endl;
-#endif
-            // goto
-            if (ndc->left == 'S') {
-                std::cout << "acc" << std::endl;
-                break;
-            }
-            cur_state = stateStack.top();
-            // std::cout << "want goto:" << ndc->left << std::endl;
-            cur_state = charGoto[cur_state][ndc->left];
-            // std::cout << "goto:" << cur_state << std::endl;
-            stateStack.push(cur_state);
-            pushNode.iskey = false;
-            pushNode.val.prod = ndc->left;
-            symStack.push(pushNode);
-#ifdef debug
-            std::cout << "-------" << std::endl;
-            stateStack.show();
-            symStack.show();
-            std::cout << "-------" << std::endl;
-#endif
-        }
-        
-        if (ndc) {
-            std::cout << "+++++++++ = = ++++++++++" << std::endl;
-            ndc->show();
-            if (ndc->left == 'S') {
-                break;
-            }
-        }
-        // jump
-        std::cout << "jump begin" << std::endl;
-        if ((nxt_state = symGoto[cur_state][word_code]) != -1) {
-            stateStack.push(nxt_state);
-            pushNode.iskey = true;
-            pushNode.val.code = word_code;
-            symStack.push(pushNode);
-#ifdef debug
-            std::cout << "push:" << nxt_state << std::endl;
-            std::cout << "-------" << std::endl;
-            stateStack.show();
-            symStack.show();
-            std::cout << "-------" << std::endl;
-#endif
-            continue;
-        }
-        else {
-            std::cout << "tran error" << std::endl;
-            break;
-        }
-        if (word->code == 0) break;
-    }
-    // look_symboltable(table);
-}
-*/
-/*
-void Compiler::look_symboltable(TableEntry* table)
-{
-    for (int i = 0; i < table_id; i++) {
-        table[i].look();
-    }
-    return;
-}
-*/

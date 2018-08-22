@@ -2,7 +2,7 @@ CXX = g++
 
 CXXFLAGS = -std=c++11
 
-OBJS = main.o lexer.o keywords.o parser.o
+OBJS = main.o lexer.o keywords.o parser.o symbol.o
 
 LIBS =
 

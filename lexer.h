@@ -22,6 +22,7 @@
 #define MAXWORDS 1000
 
 #include "keywords.h"
+#include "symbol.h"
 
 struct Word
 {
@@ -39,10 +40,10 @@ struct Automaton
     char buffer[BUFFER_SIZE];
     int buffer_id;
     int scanChar(char c);
-    Word* getWord();
+    Word* getWord(SymbolTable& symboltable);
 };
 
-int getWords(Word* words[], std::string filename);
+int getWords(Word* words[], std::string filename, SymbolTable& symboltable);
 
-Word* word_scanner(std::ifstream& file);
+Word* word_scanner(std::ifstream& file, SymbolTable& symboltable);
 int isKeyWord(std::string x);

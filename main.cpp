@@ -4,20 +4,21 @@
 #include "keywords.h"
 #include "lexer.h"
 #include "parser.h"
+#include "symbol.h"
 
 Word* words[1000];
+SymbolTable symboltable;
 
-int main(int argc, char* argv[])
+int main()
 {
     kwords::init_keywords("keywords.txt");
-    int words_n = getWords(words, argv[2]);
-    // test lexer:
-    for (int i = 0; i < words_n; i++) {
-        std::cout << kwords::getStr(words[i]->code) << std::endl;
-    }
-    // test end 
+    int words_n = getWords(words, "source.txt", symboltable); // source file
+    
+    symboltable.show();
+    return 0;
+    
     CompilerTable cpltb;
-    if (cpltb.initGoto(argv[1], 'S')) {
+    if (cpltb.initGoto("pro.txt", 'S')) {
         std::cout << "conflict" << std::endl;
         return 0;
     }

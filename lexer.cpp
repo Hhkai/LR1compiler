@@ -3,6 +3,9 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
+#include <string>
+#include <sstream>
+#include <cstdlib>
 
 #include <assert.h>
 
@@ -154,21 +157,28 @@ int Automaton::scanChar(char c)
     return -1;
 }
 
-Word* Automaton::getWord()
+Word* Automaton::getWord(SymbolTable& symboltable)
 {
     Word* word = new Word();
     int code;
+    int value;
     switch (state) {
     case AUTO_NOTING:
         word->code = WORD_NOTINGEND;
         return word;
     case AUTO_DIGIT:
         word->code = kwords::getInt("num");
+        buffer[buffer_id] = 0;
+        value = atoi(buffer);
+        word->val = symboltable.signInNum(value);
         return word;
     case AUTO_OPERATOR:
     case AUTO_LETTER:
         code = kwords::getInt(buffer);
         word->code = code;
+        if (code == kwords::getInt("id")) {
+            word->val = symboltable.signInId(buffer);
+        }
         return word;
     default:
         word->code = state;
@@ -177,7 +187,7 @@ Word* Automaton::getWord()
     return NULL;
 }
 
-Word* word_scanner(std::ifstream& file) {
+Word* word_scanner(std::ifstream& file, SymbolTable& symboltable) {
     if (!file) {
         printf("file open failed!^");
         return NULL;
@@ -243,7 +253,7 @@ Word* word_scanner(std::ifstream& file) {
         }
         if (breakloop) break;
     }
-    Word* word = mata.getWord();
+    Word* word = mata.getWord(symboltable);
     if (singlenote) {
         word->code = WORD_NOTINGEND;
         singlenote = false;
@@ -255,25 +265,24 @@ Word* word_scanner(std::ifstream& file) {
     }
     
     if (!word || word->code == -1) return NULL;
-    /*
-    if (word->code == kwords::getInt("id") || word->code == kwords::getInt("num")) {
-        word->pos = signIn(mata.buffer, word->code, 0, 0);
-    }
-    */
     
     return word;
 }
 
-int getWords(Word* words[], std::string filename)
+int getWords(Word* words[], std::string filename, SymbolTable& symboltable)
 {
     std::ifstream read_file;
     read_file.open(filename);
     int cnt = 0;
     Word* word;
-    while ((word = word_scanner(read_file)) != 0) {
+    static int id_k = kwords::getInt("id");
+    static int num_k = kwords::getInt("num");
+    while ((word = word_scanner(read_file, symboltable)) != 0) {
         if (word->code == WORD_NOTINGEND) continue;
         if (word->code == 0) word->code = kwords::getInt("endw");
-        if (word->code == kwords::getInt("id") || word->code == kwords::getInt("num")) word->code = kwords::getInt("var");
+        if (word->code == id_k || word->code == num_k) {
+            word->code = kwords::getInt("var");
+        }
         words[cnt++] = word;
         if (word->code == kwords::getInt("endw") || word->code == 0) break;
     }
