@@ -46,12 +46,17 @@ B->if ( E ) { A }
 B->while ( E ) { A }
 B->for ( R E ; Q ) { A } 
 
-Q->var = E
-Q->var ++
-Q->var --
-Q->-- var 
-Q->++ var
-Q->var += E
-Q->var -= E
-Q->var *= E
-Q->var /= E
+Q->D = E
+Q->D ++
+Q->D --
+Q->-- D 
+Q->++ D
+Q->D += E
+Q->D -= E
+Q->D *= E
+Q->D /= E
+
+D->var
+
+// plus
+X->;

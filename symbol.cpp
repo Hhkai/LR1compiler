@@ -50,3 +50,13 @@ void SymbolTable::show() {
         ++id;
     }
 }
+
+void SymbolTable::showItem(int id) {
+    SymbolItem& x = symbols[id];
+    std::cout << id << ":  \t" << "type: " << x.type;
+    if (x.type == 2) {
+        std::cout << "  \t name: " << x.name;
+    }
+    std::cout << "  \t value: " << x.value << std::endl;
+    //std::cout << "  \t var_type: " << x.value<< std::endl;
+}

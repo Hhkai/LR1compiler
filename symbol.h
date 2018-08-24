@@ -10,6 +10,7 @@ class SymbolItem
     char name[80];
     SymbolItem(int _type, int _value) : type(_type), value(_value) {}
     SymbolItem() {}
+    int var_type;
 };
 
 class SymbolTable 
@@ -20,4 +21,5 @@ class SymbolTable
     int signInId(char*);
     int signInNum(int);
     void show();
+    void showItem(int);
 };

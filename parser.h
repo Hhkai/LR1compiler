@@ -2,9 +2,11 @@
 
 #include <set>
 #include <string>
+#include <fstream>
 
 #include "keywords.h"
 #include "lexer.h"
+#include "symbol.h"
 
 #define MAX_STACK 1000
 #define MAX_CLOSURE 1000
@@ -35,6 +37,8 @@ class Node
 class NodeChain
 {
     public:
+    static int cnt;
+    int id;
     int len;
     char left;
     Node* head;
@@ -74,7 +78,7 @@ class SymStack
     Node nodes[MAX_STACK];
     int cur;
     SymStack():cur(0){}
-    void push(Node);
+    int push(Node);
     void pop(int);
     Node* get(int);
     void show();
@@ -132,7 +136,7 @@ class CompilerTable
     void showClosures();
     CompilerTable();
     //
-    void read_source(Word* words[], int words_n);
+    void read_source(Word* words[], int words_n, SymbolTable&);
     StateStack stateStack;
     SymStack symStack;
 };

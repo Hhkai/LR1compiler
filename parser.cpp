@@ -1,4 +1,6 @@
 #include "parser.h"
+#include "reduce.h"
+
 #include <fstream>
 #include <map>
 #include <cstdlib>
@@ -38,6 +40,8 @@ bool Node::equal(Node* oth)
     return true;
 }
 
+int NodeChain::cnt = 0;
+
 NodeChain::NodeChain(char ch = 0)
 {
     left = ch;
@@ -46,6 +50,8 @@ NodeChain::NodeChain(char ch = 0)
     tail = _head;
     nxt = NULL;
     len = 0;
+    id = NodeChain::cnt;
+    ++(NodeChain::cnt);
 }
 void NodeChain::addNode(Node* node)
 {
@@ -61,6 +67,7 @@ void NodeChain::show()
     for (p = head->nxt; p; p = p->nxt) {
         p->show();
     }
+    std::cout << "\t\t id:" << id;
 }
 
 Production::Production(char x)
@@ -155,6 +162,7 @@ void readinput(std::string filename)
 {
     std::ifstream read_file;
     read_file.open(filename);
+
     char buffer[256];
     if (!read_file) {
         std::cout << "file open failed!^" << std::endl;
@@ -668,12 +676,13 @@ void CompilerTable::showClosures()
     }
 }
 
-void SymStack::push(Node node)
+int SymStack::push(Node node)
 {
     nodes[cur++] = node;
     if (cur >= MAX_STACK) {
         std::cout << "MAX_STACK" << std::endl;
     }
+    return cur - 1;
 }
 void SymStack::pop(int n = 1)
 {
@@ -714,7 +723,7 @@ void StateStack::show()
     }
     std::cout << std::endl;
 }
-void CompilerTable::read_source(Word* words[], int words_n)
+void CompilerTable::read_source(Word* words[], int words_n, SymbolTable& symboltable)
 {
     stateStack.cur = 0;
     symStack.cur = 0;
@@ -732,8 +741,8 @@ void CompilerTable::read_source(Word* words[], int words_n)
         curword = words[i];
         cur_state = stateStack.top();
         
-        std::cout << "cur_state:" << cur_state << std::endl;
-        std::cout << "scan a code:" << kwords::getStr(curword->code) << std::endl;
+        // std::cout << "cur_state:" << cur_state << std::endl;
+        // std::cout << "scan a code:" << kwords::getStr(curword->code) << std::endl;
         
         if ((nxt_state = symGoto[cur_state][curword->code]) != -1) {
             stateStack.push(nxt_state);
@@ -749,15 +758,31 @@ void CompilerTable::read_source(Word* words[], int words_n)
                 return;
             }
             // pop and goto
-            std::cout << "reduce:" << ndc->left;
-            ndc->show();
-            std::cout << std::endl;
+            
+            // std::cout << "reduce:" << ndc->left;
+            // ndc->show();
+            // std::cout << std::endl;
             stateStack.pop(ndc->len);
             symStack.pop(ndc->len);
             left = ndc->left;
             pushnode.iskey = false;
             pushnode.val.prod = ndc->left;
-            symStack.push(pushnode);
+            
+            // reduce
+            int pos = symStack.push(pushnode);
+            int noAction = ndcReduce(ndc->id, pos, words[i - 1]->val, symboltable);
+            // ATTENTION !! 
+            // this ``words[i - 1]'' may cause an unexcepted bug
+            
+            if (noAction) {
+                std::cout << "reduce:" << ndc->left;
+                ndc->show();
+                std::cout << "\n-------" << std::endl;
+                stateStack.show();
+                symStack.show();
+                std::cout << "-------" << std::endl;
+            }
+            //
             nxt_state = charGoto[stateStack.top()][ndc->left];
             stateStack.push(nxt_state);
             //
@@ -766,9 +791,9 @@ void CompilerTable::read_source(Word* words[], int words_n)
                 break;
             }
         }
-        std::cout << "-------" << std::endl;
-        stateStack.show();
-        symStack.show();
-        std::cout << "-------" << std::endl;
+        // std::cout << "-------" << std::endl;
+        // stateStack.show();
+        // symStack.show();
+        // std::cout << "-------" << std::endl;
     }
 }

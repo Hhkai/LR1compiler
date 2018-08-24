@@ -1,8 +1,11 @@
 int main() {
-    /*  sdsdd */
-    int a;
-int b;
-a = 123;
-b = a + 1;
+    int x;
+    bool b;
+    b=false;
+    x = 5;
+    while (x < 10) {
+        x++;
+        b = !b;
+}
     return 0;
 }

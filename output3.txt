@@ -1,0 +1,15 @@
+T0 = false
+V1 = T0
+T1 = 5
+V0 = T1
+L0:
+T2 = V0
+T3 = 10
+T4 = T2 < T3
+ifFalse T4 goto L1
+V0 = V0 + 1
+T5 = V1
+T6 = ! T5
+V1 = T6
+goto L0
+L1:
