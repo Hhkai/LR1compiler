@@ -60,3 +60,6 @@ D->var
 
 // plus
 X->;
+
+D->D [ E ]
+E->D [ E ]

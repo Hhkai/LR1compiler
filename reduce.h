@@ -12,6 +12,7 @@ class TreeNode
     int codeline;
     int first; // the first code
     int last; // the last code
+    char name[80] = "";
 };
 
 class Code

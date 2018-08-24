@@ -6,6 +6,9 @@ int main() {
     while (x < 10) {
         x++;
         b = !b;
-}
+    }
+
+    a[8] = 5;
+    a[9] = a[7] + x;
     return 0;
 }

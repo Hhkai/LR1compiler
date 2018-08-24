@@ -20,6 +20,8 @@ int ThreeAddCode::output()
     return 0;
 }
 
+// ATTENTION that when a `D' is generated, there is no codes. 
+// !!!
 int ndcReduce(int id, int pos, int entry, SymbolTable& symboltable)
 {
     int tp_entry;
@@ -130,6 +132,12 @@ int ndcReduce(int id, int pos, int entry, SymbolTable& symboltable)
         tree[pos].var = entry;
         break;
         
+        case 60:
+        // D : D [ E ]
+        tree[pos].type = 6; // array
+        sprintf(tree[pos].name, "V%d[T%d]", tree[pos].var, tree[pos + 2].var);
+        break;
+        
         case 19:
         // T : F
         break;
@@ -140,16 +148,21 @@ int ndcReduce(int id, int pos, int entry, SymbolTable& symboltable)
         
         case 48:
         // Q : D = E 
-        tp_add = tree[pos].var;
         tp_temp = tree[pos + 2].var;
         tac.codes[tac.last].next = tac.cur;
         tac.codes[tac.cur].prev = tac.last;
         tac.last = tac.cur;
-        // tree[pos].first ;
+        tree[pos].first = tree[pos + 2].first;
         tree[pos].last = tac.cur;
         
         p_code = &(tac.codes[tac.cur++]);
-        sprintf(p_code->content, "V%d = T%d", tp_add, tp_temp);
+        if (tree[pos].type == 6) {
+            sprintf(p_code->content, "%s = T%d", tree[pos].name, tp_temp);
+        } 
+        else if (tree[pos].type == 5) {
+            tp_add = tree[pos].var;
+            sprintf(p_code->content, "V%d = T%d", tp_add, tp_temp);
+        }
         break;
         
         case 13:
@@ -163,6 +176,20 @@ int ndcReduce(int id, int pos, int entry, SymbolTable& symboltable)
         
         p_code = &(tac.codes[tac.cur++]);
         sprintf(p_code->content, "T%d = T%d + T%d", tp_temp, tree[pos].var, tree[pos + 2].var);
+        tree[pos].var = tp_temp;
+        break;
+        
+        case 61:
+        // E : D [ E ]
+        tp_temp = tac.temp++;
+        tac.codes[tac.last].next = tac.cur;
+        tac.codes[tac.cur].prev = tac.last;
+        tac.last = tac.cur;
+        tree[pos].first = tree[pos + 2].first;
+        tree[pos].last = tac.cur;
+        
+        p_code = &(tac.codes[tac.cur++]);
+        sprintf(p_code->content, "T%d = V%d[T%d]", tp_temp, tree[pos].var, tree[pos + 2].var);
         tree[pos].var = tp_temp;
         break;
         
@@ -190,7 +217,12 @@ int ndcReduce(int id, int pos, int entry, SymbolTable& symboltable)
         tree[pos].first = tac.cur;
         
         p_code = &(tac.codes[tac.cur++]);
-        sprintf(p_code->content, "V%d = V%d + 1", tp_add, tp_add);
+        if (tree[pos].type == 6) {
+            sprintf(p_code->content, "%s = %s + 1", tree[pos].name, tree[pos].name);
+        } 
+        else if (tree[pos].type == 5) {
+            sprintf(p_code->content, "V%d = V%d + 1", tp_add, tp_add);
+        }
         break;
         
         case 52:
@@ -203,7 +235,12 @@ int ndcReduce(int id, int pos, int entry, SymbolTable& symboltable)
         tree[pos].last = tac.cur;
         
         p_code = &(tac.codes[tac.cur++]);
-        sprintf(p_code->content, "V%d = V%d + 1", tp_add, tp_add);
+        if (tree[pos].type == 6) {
+            sprintf(p_code->content, "%s = %s + 1", tree[pos].name, tree[pos].name);
+        } 
+        else if (tree[pos].type == 5) {
+            sprintf(p_code->content, "V%d = V%d + 1", tp_add, tp_add);
+        }
         break;
         
         case 34:
@@ -280,13 +317,13 @@ int ndcReduce(int id, int pos, int entry, SymbolTable& symboltable)
         tree[pos].last = tac.cur++;
         break;
         
-        /*
         case 11:
         // R : Q ;
         case 38:
         case 40:
+        case 41:
+        case 39:
         break;
-        */
         
         default:
         std::cout << ">>>> ndcReduce: " << id << " " << pos << std::endl;

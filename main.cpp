@@ -15,7 +15,7 @@ SymbolTable symboltable;
 int main()
 {
     kwords::init_keywords("keywords.txt");
-    int words_n = getWords(words, "source.txt", symboltable); // source file
+    int words_n = getWords(words, "source_using.txt", symboltable); // source file
     
     symboltable.show();
     
